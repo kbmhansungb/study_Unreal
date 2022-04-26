@@ -2,6 +2,7 @@
 
 
 #include "CharacterAnimInstance.h"
+#include "CharacterAnimation.h"
 #include "CharacterAnimationCharacter.h"
 #include <GameFramework/CharacterMovementComponent.h>
 
@@ -12,14 +13,14 @@ void UCharacterAnimInstance::NativeBeginPlay()
 	OwningCharacter = Cast<ACharacterAnimationCharacter>(GetOwningActor());
 	if (OwningCharacter == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("You are trying to use an anim instance for the wrong character."));
+		UE_LOG(CharacterAnimation, Error, TEXT("You are trying to use an anim instance for the wrong character."));
 		return;
 	}
 
 	MovementComponent = Cast<UCharacterMovementComponent>(OwningCharacter->GetMovementComponent());
 	if (MovementComponent == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Movement component is not vaild."));
+		UE_LOG(CharacterAnimation, Error, TEXT("Movement component is not vaild."));
 		return;
 	}
 }
