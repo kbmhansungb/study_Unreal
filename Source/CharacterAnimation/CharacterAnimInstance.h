@@ -17,7 +17,13 @@ class CHARACTERANIMATION_API UCharacterAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
-public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	ACharacterAnimationCharacter* OwningCharacter;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UCharacterMovementComponent* MovementComponent;
+
+protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float GroundSpeed;
 
@@ -30,11 +36,4 @@ public:
 protected:
 	virtual void NativeBeginPlay() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
-
-private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	ACharacterAnimationCharacter* OwningCharacter;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UCharacterMovementComponent* MovementComponent;
 };

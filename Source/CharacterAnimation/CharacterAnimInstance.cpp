@@ -37,9 +37,9 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	IsFailing = MovementComponent->IsFalling();
 
 	/*
-		Set Should Move to true only if ground speed is above a small threshold
-		(to prevent incredibly small velocities from triggering animations)
-		and if there is currently acceleration (input) applied.
+		지면 속도가 작은 임계값보다 높은 경우에만 이동해야 함을 true로 설정합니다.
+		(매우 작은 속도가 애니메이션을 트리거하는 것을 방지하기 위해)
+		현재 가속(입력)이 적용된 경우.
 	*/
 	if (MovementComponent->GetCurrentAcceleration() != FVector(0.0f, 0.0f, 0.0f) && GroundSpeed > 0.3f)
 	{
