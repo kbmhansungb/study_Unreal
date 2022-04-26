@@ -6,6 +6,9 @@
 #include "Animation/AnimInstance.h"
 #include "CharacterAnimInstance.generated.h"
 
+class ACharacterAnimationCharacter;
+class UCharacterMovementComponent;
+
 /**
  * 
  */
@@ -14,4 +17,24 @@ class CHARACTERANIMATION_API UCharacterAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float GroundSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsFailing;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool ShouldMove;
+
+protected:
+	virtual void NativeBeginPlay() override;
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	ACharacterAnimationCharacter* OwningCharacter;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UCharacterMovementComponent* MovementComponent;
 };
