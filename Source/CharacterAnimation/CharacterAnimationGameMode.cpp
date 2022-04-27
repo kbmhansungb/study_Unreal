@@ -6,5 +6,4 @@
 
 ACharacterAnimationGameMode::ACharacterAnimationGameMode()
 {
-	DefaultPawnClass = ACharacterAnimationCharacter::StaticClass();
 }
