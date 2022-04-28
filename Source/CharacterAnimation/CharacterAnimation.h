@@ -2,6 +2,7 @@
 
 #pragma once
 
-#include "EngineMinimal.h"
+#include "CoreMinimal.h"
+//#include "EngineMinimal.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(CharacterAnimation, Log, All);
