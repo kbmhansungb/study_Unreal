@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{2D0CB817-4069-B833-CD4E-C29AAC0C9BF5}",
+	"EngineAssociation": "5.0",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -11,6 +11,22 @@
 			"AdditionalDependencies": [
 				"Engine"
 			]
+		},
+		{
+			"Name": "BuildingConstruction",
+			"Type": "Runtime"
+		},
+		{
+			"Name": "InteractiveObject",
+			"Type": "Runtime"
+		},
+		{
+			"Name": "ProceduralMeshLibrary",
+			"Type": "Runtime"
+		},
+		{
+			"Name": "UITool",
+			"Type": "Runtime"
 		}
 	],
 	"Plugins": [

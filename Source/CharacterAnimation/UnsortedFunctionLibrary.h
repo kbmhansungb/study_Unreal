@@ -1,22 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Kismet/BlueprintFunctionLibrary.h"
 #include "UnsortedFunctionLibrary.generated.h"
 
 USTRUCT(BlueprintType)
-struct CHARACTERANIMATION_API FFABRIKSegment final
+struct CHARACTERANIMATION_API FFABRIKSegment
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector Position;
+		FVector Position;
 
 	UPROPERTY(EditANywhere, BlueprintReadWrite)
-	float Length;
+		float Length;
 };
 
 UCLASS(meta = (BlueprintSpawnableComponent))
@@ -44,21 +42,33 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FVector GetPosition(int32 Index);
 
+	/*
+	*	Makes the first head reach the desired position.
+	*/
 	UFUNCTION(BlueprintCallable)
 	void ApplyForward(const FVector& Target);
 
+	/*
+	*	Makes the last tail reach the desired position.
+	*/
 	UFUNCTION(BlueprintCallable)
 	void ApplyBackward(const FVector& Target);
 
+	/*
+	*	The FABRIK algorithm in which the position of the tail is fixed is applied.
+	*/
 	UFUNCTION(BlueprintCallable)
 	void ApplyFixed(const FVector& Target);
 
+	/*
+	*	Allows the segment at a specific index to reach the desired position.
+	*/
 	UFUNCTION(BlueprintCallable)
 	void ApplyWithIndex(int32 Index, const FVector& Target);
 
 	UFUNCTION(BlueprintCallable)
 	void Recalculated();
-	
+
 private:
 	/*
 	*	The first index means the first head.
@@ -94,6 +104,8 @@ private:
 		FVector TargetToTailVector = Tail - Target;
 		const float SquareSum = TargetToTailVector.SquaredLength();
 
+		// There is a problem that the position of
+		//the tail becomes NAN when Square Sum is 0.
 		if (SquareSum < FLT_EPSILON)
 		{
 			return Target + DefaultTailVector * Length;
@@ -120,7 +132,7 @@ private:
 		while (Start < End)
 		{
 			Segments[Start].Position = Target;
-			UpdateTailPosition(Segments[Start].Length, Segments[Start + 1].Position, Target);
+			UpdateTailPosition(Segments[Start + 1].Length, Segments[Start + 1].Position, Target);
 			Target = Segments[Start + 1].Position;
 			Start++;
 		}
@@ -136,22 +148,9 @@ private:
 		while (Start < End)
 		{
 			Segments[End].Position = Target;
-			UpdateTailPosition(Segments[End - 1].Length, Segments[End - 1].Position, Target);
+			UpdateTailPosition(Segments[End].Length, Segments[End - 1].Position, Target);
 			Target = Segments[End - 1].Position;
 			End--;
 		}
 	}
-};
-
-
-
-/**
- * 
- */
-UCLASS()
-class CHARACTERANIMATION_API UUnsortedFunctionLibrary : public UBlueprintFunctionLibrary
-{
-	GENERATED_BODY()
-	
-public:
 };
