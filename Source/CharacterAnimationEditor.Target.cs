@@ -10,6 +10,7 @@ public class CharacterAnimationEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("CharacterAnimation");
+
 		ExtraModuleNames.Add("BuildingConstruction");
 		ExtraModuleNames.Add("InteractiveObject");
 		ExtraModuleNames.Add("ProceduralMeshLibrary");
