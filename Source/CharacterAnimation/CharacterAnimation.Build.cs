@@ -16,8 +16,7 @@ public class CharacterAnimation : ModuleRules
 			"HeadMountedDisplay",
 
 			"RHI",
-			"RenderCore",
-			"Projects"
+			"RenderCore"
 		});
 	}
 }
