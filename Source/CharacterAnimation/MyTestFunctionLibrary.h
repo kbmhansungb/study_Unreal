@@ -10,7 +10,8 @@ class UGlobalTestShaderBlueprintLibrary : public UBlueprintFunctionLibrary
     GENERATED_BODY()
 
 public:
-    UFUNCTION(BlueprintCallable, Category = "GlobalShaderTest", meta = (WorlContext = "WorldContextObject"))
+
+    UFUNCTION(BlueprintCallable, Category = "GlobalShaderTest", meta = (WorldContext = "WorldContextObject"))
     static void DrawGlobalTestShaderRenderTarget(
         class UTextureRenderTarget2D* OutputRenderTarget,
         AActor* Actor
