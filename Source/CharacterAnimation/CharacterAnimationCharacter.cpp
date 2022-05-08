@@ -56,8 +56,13 @@ ACharacterAnimationCharacter::ACharacterAnimationCharacter()
 
 void ACharacterAnimationCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
-	// Set up gameplay key bindings
-	check(PlayerInputComponent);
+	if (PlayerInputComponent == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("An invalid player controller was used."));
+
+		return;
+	}
+
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 

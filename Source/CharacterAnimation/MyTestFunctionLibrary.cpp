@@ -35,7 +35,7 @@ class FMyVertexBuffer : public FVertexBuffer
 public:
 	virtual void InitRHI() override
 	{
-		FRHIResourceCreateInfo CreateInfo(L"MyTest");
+		FRHIResourceCreateInfo CreateInfo(L"MyGlobalShader");
 		VertexBufferRHI = RHICreateVertexBuffer(sizeof(FMyBufferStruct) * 4, BUF_Static, CreateInfo);
 		void* VoidPtr = RHILockBuffer(VertexBufferRHI, 0, sizeof(FMyBufferStruct) * 4, RLM_WriteOnly);
 
@@ -54,7 +54,7 @@ class FMyIndexBuffer : public FIndexBuffer
 public:
 	virtual void InitRHI() override
 	{
-		FRHIResourceCreateInfo CreateInfo(L"MyTest");
+		FRHIResourceCreateInfo CreateInfo(L"MyGlobalShader");
 		using TYPE = uint16;
 		const uint32 Stride = sizeof(TYPE);
 		const uint32 Size = Stride * 6;
@@ -89,7 +89,7 @@ static void DrawMyShader_RenderThread (
 		OutputRenderTargetResource->GetRenderTargetTexture(),
 		ERenderTargetActions::DontLoad_Store
 	);
-	RHICmdList.BeginRenderPass(RPInfo, TEXT("DrawGlobalTest"));
+	RHICmdList.BeginRenderPass(RPInfo, TEXT("MyGlobalShader"));
 	
 	auto GlobalShaderMap = GetGlobalShaderMap(FeatureLevel);
 	TShaderMapRef<FMyTestVS> VertexShader(GlobalShaderMap);
@@ -121,7 +121,7 @@ static void DrawMyShader_RenderThread (
 	RHICmdList.EndRenderPass();
 }
 
-void UGlobalTestShaderBlueprintLibrary::DrawGlobalTestShaderRenderTarget(
+void UGlobalTestShaderBlueprintLibrary::UseGlobalShader(
 	UTextureRenderTarget2D* OutputRenderTarget,
 	AActor* Actor
 )
@@ -145,4 +145,76 @@ void UGlobalTestShaderBlueprintLibrary::DrawGlobalTestShaderRenderTarget(
 				DrawMyShader_RenderThread(RHICmdList, FeatureLevel, TextureRenderTargetResource);
 			}
 		);
+}
+
+
+void UGlobalTestShaderBlueprintLibrary::UseGlobalShader2(UTextureRenderTarget2D* OutputRenderTarget, UTexture2D* Texture2D, AActor* Actor)
+{
+}
+
+static void UseComputeShader_RenderThread(
+	FRHICommandListImmediate& RHICmdList,
+	FTextureRenderTargetResource* OutputRenderTargetResource,
+	ERHIFeatureLevel::Type FeatureLevel
+)
+{
+	check(IsInRenderingThread());
+
+	TShaderMapRef<FMyTestCS> ComputeShader(GetGlobalShaderMap(FeatureLevel));
+	FRHIComputeShader* ComputeShaderRHI = ComputeShader.GetComputeShader();
+	const FShaderResourceParameter& OutputTexture = ComputeShader->GetOutputTexture();
+
+	const uint32 SizeX = OutputRenderTargetResource->GetSizeX();
+	const uint32 SizeY = OutputRenderTargetResource->GetSizeY();
+	
+	FRHIResourceCreateInfo CreateInfo(L"My compute texture");
+	FTexture2DRHIRef Texture = RHICreateTexture2D(SizeX, SizeY, PF_A32B32G32R32F, 1, 1, TexCreate_ShaderResource | TexCreate_UAV, CreateInfo);
+	FTexture2DRHIRef OriginalRT = OutputRenderTargetResource->GetRenderTargetTexture();
+	FUnorderedAccessViewRHIRef TextureUAV = RHICreateUnorderedAccessView(Texture);
+	
+	// Bind parameter
+	RHICmdList.SetUAVParameter(ComputeShaderRHI, OutputTexture.GetBaseIndex(), TextureUAV);
+
+	//RHICmdList.SetComputeShader(ComputeShaderRHI);
+	//RHICmdList.DispatchComputeShader(SizeX / 32, SizeY / 32, 1);
+	DispatchComputeShader(RHICmdList, ComputeShader, SizeX / 32, SizeX / 32, 1);
+
+	// Unbind parameter
+	RHICmdList.SetUAVParameter(ComputeShaderRHI, OutputTexture.GetBaseIndex(), FUnorderedAccessViewRHIRef());
+
+	// Now parameter Texture saves the execute result
+	FRHICopyTextureInfo CopyInfo;
+	CopyInfo.Size.X = Texture->GetSizeX();
+	CopyInfo.Size.Y = Texture->GetSizeY();
+	CopyInfo.Size.Z = 1;
+	CopyInfo.SourcePosition.X = Texture->GetSizeX();
+	CopyInfo.SourcePosition.Y = Texture->GetSizeY();
+	CopyInfo.SourcePosition.Z = 0;
+	CopyInfo.DestPosition.X = OriginalRT->GetSizeX();
+	CopyInfo.DestPosition.Y = OriginalRT->GetSizeY();
+	CopyInfo.DestPosition.Z = 0;
+	RHICmdList.CopyTexture(Texture, OriginalRT, CopyInfo);
+
+}
+
+void UGlobalTestShaderBlueprintLibrary::UseComputeShader(UTextureRenderTarget2D* OutputRenderTarget, AActor* Actor)
+{
+	check(IsInGameThread());
+
+	if (!OutputRenderTarget)
+		return;
+	if (!Actor)
+		return;
+
+	FTextureRenderTargetResource* TextureRenderTargetResource = OutputRenderTarget->GameThread_GetRenderTargetResource();
+
+	UWorld* World = Actor->GetWorld();
+	ERHIFeatureLevel::Type FeatureLevel = World->Scene->GetFeatureLevel();
+
+	ENQUEUE_RENDER_COMMAND(CaptureCommand)(
+		[TextureRenderTargetResource, FeatureLevel](FRHICommandListImmediate& RHICmdList)
+		{
+			UseComputeShader_RenderThread(RHICmdList, TextureRenderTargetResource, FeatureLevel);
+		}
+	);
 }

@@ -14,19 +14,23 @@
 		},
 		{
 			"Name": "BuildingConstruction",
-			"Type": "Runtime"
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "InteractiveObject",
-			"Type": "Runtime"
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "ProceduralMeshLibrary",
-			"Type": "Runtime"
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		},
 		{
 			"Name": "UITool",
-			"Type": "Runtime"
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -45,6 +49,11 @@
 				"Mac",
 				"Linux"
 			]
+		},
+		{
+			"Name": "HLSLMaterial",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/871a7ec4baca4220a8a8a8422629f55e"
 		}
 	]
 }
