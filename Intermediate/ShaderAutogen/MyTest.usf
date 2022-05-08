@@ -1,0 +1,22 @@
+#pragma once
+
+#include "/Engine/Public/Platform.ush"
+
+void MainVS(
+    float4 InPosition : ATTRIBUTE0,
+    float2 InUV : ATTRIBUTE1,
+    out float4 OutPosition : SV_POSITION,
+    out float2 OutUV : TEXCOORD0
+)
+{
+    OutPosition = InPosition;
+    OutUV = InUV;
+}
+
+void MainPS(
+    float2 UV : TEXCOORD0,
+    out float4 Color : SV_Target0
+)
+{
+    Color = float4(UV, 0.0f, 1.0f);
+}

@@ -1,0 +1,11 @@
+#pragma once
+
+#include "Common.ush"
+
+void Main(
+	FScreenVertexOutput Input,
+	out float4 OutColor : SV_Target0
+	)
+{
+    OutColor = float4(Input.UV.x, Input.UV.y, Input.UV.x, 1);
+}
