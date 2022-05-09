@@ -15,5 +15,6 @@ public class CharacterAnimationEditorTarget : TargetRules
 		ExtraModuleNames.Add("InteractiveObject");
 		ExtraModuleNames.Add("ProceduralMeshLibrary");
 		ExtraModuleNames.Add("UITool");
-	}
+        ExtraModuleNames.Add("Rendering");
+    }
 }

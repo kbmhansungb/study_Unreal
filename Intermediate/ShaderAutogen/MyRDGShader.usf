@@ -1,9 +1,0 @@
-#pragma once
-
-#include "/Engine/Public/Platform.ush"
-
-[numthreads(32, 32, 1)]
-void MainCS()
-{
-    
-}

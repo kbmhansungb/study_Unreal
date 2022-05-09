@@ -13,6 +13,11 @@
 			]
 		},
 		{
+			"Name": "Rendering",
+			"Type": "Runtime",
+			"LoadingPhase": "PostConfigInit"
+		},
+		{
 			"Name": "BuildingConstruction",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"

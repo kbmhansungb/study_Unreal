@@ -19,16 +19,9 @@ public:
         AActor* Actor
     );
 
-    UFUNCTION(BlueprintCallable, Category = "GlobalShaderTest", meta = (WorldContext = "WorldContextObject"))
-    static void UseGlobalShader2(
-        UTextureRenderTarget2D* OutputRenderTarget,
-        UTexture2D* Texture2D,
-        AActor* Actor
-    );
-
-    UFUNCTION(BlueprintCallable, Category = "GlobalShaderTest", meta = (WorldContext = "WorldContextObject"))
-    static void UseComputeShader(
-        UTextureRenderTarget2D* OutputRenderTarget,
-        AActor* Actor
-    );
+    //UFUNCTION(BlueprintCallable, Category = "GlobalShaderTest", meta = (WorldContext = "WorldContextObject"))
+    //static void UseComputeShader(
+    //    UTextureRenderTarget2D* OutputRenderTarget,
+    //    AActor* Actor
+    //);
 };
