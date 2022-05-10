@@ -30,6 +30,7 @@ class FMyTestPS : public FGlobalShader
 	SHADER_USE_PARAMETER_STRUCT(FMyTestPS, FGlobalShader)
 	BEGIN_SHADER_PARAMETER_STRUCT(FParameters, )
 		SHADER_PARAMETER_TEXTURE(Texture2D, SrcTexture)
+		SHADER_PARAMETER_SAMPLER(SamplerState, SrcTextureSampler)
 	END_SHADER_PARAMETER_STRUCT()
 
 protected:

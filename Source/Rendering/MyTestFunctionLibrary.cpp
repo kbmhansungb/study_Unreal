@@ -94,7 +94,8 @@ TGlobalResource<FMyIndexBuffer> IndexBuffer;
 static void UseGlobalShader_RenderThread (
 	FRHICommandListImmediate& RHICmdList,
 	ERHIFeatureLevel::Type FeatureLevel,
-	FTextureRenderTargetResource* OutputRenderTargetResource
+	FTextureRenderTargetResource* OutputRenderTargetResource,
+	FTextureResource* SrcTexture
 )
 {
 	check(IsInRenderingThread());
@@ -121,10 +122,14 @@ static void UseGlobalShader_RenderThread (
 	GraphicsPSOInit.BoundShaderState.PixelShaderRHI = PixelShader.GetPixelShader();
 	GraphicsPSOInit.PrimitiveType = PT_TriangleList;
 
-	SetGraphicsPipelineState(RHICmdList, GraphicsPSOInit, EApplyRendertargetOption::ForceApply);
-
+	SetGraphicsPipelineState(RHICmdList, GraphicsPSOInit, EApplyRendertargetOption::CheckApply);
+	
+	FMyTestPS::FParameters PSParameter;
+	PSParameter.SrcTexture = SrcTexture->GetTexture2DRHI();
+	PSParameter.SrcTextureSampler = TStaticSamplerState<>::GetRHI();
+	SetShaderParameters(RHICmdList, PixelShader, PixelShader.GetPixelShader(), PSParameter);
+	
 	RHICmdList.SetStreamSource(0, VertexBuffer.VertexBufferRHI, 0);
-
 	RHICmdList.DrawIndexedPrimitive(IndexBuffer.IndexBufferRHI, 0, 0, VertexBuffer.VerticiesNum, 0, VertexBuffer.TriangleNum, 1);
 
 	RHICmdList.EndRenderPass();
@@ -132,26 +137,35 @@ static void UseGlobalShader_RenderThread (
 
 void UGlobalTestShaderBlueprintLibrary::UseGlobalShader(
 	UTextureRenderTarget2D* OutputRenderTarget,
+	UTexture* SrcTexture,
 	AActor* Actor
 )
 {
 	check(IsInGameThread());
 
 	if (!OutputRenderTarget)
+	{
 		return;
+	}
 	if (!Actor)
+	{
 		return;
-
-	FTextureRenderTargetResource* TextureRenderTargetResource = OutputRenderTarget->GameThread_GetRenderTargetResource();
-
+	}
+	if (!SrcTexture)
+	{
+		return;
+	}
 	UWorld* World = Actor->GetWorld();
 	ERHIFeatureLevel::Type FeatureLevel = World->Scene->GetFeatureLevel();
 
+	FTextureRenderTargetResource* TextureRenderTargetResource = OutputRenderTarget->GameThread_GetRenderTargetResource();
+	FTextureResource* TextureResource = SrcTexture->GetResource();
+
 	ENQUEUE_RENDER_COMMAND(CaptureCommand)(
-			[FeatureLevel, TextureRenderTargetResource]
+			[FeatureLevel, TextureRenderTargetResource, TextureResource]
 			(FRHICommandListImmediate& RHICmdList)
 			{
-				UseGlobalShader_RenderThread(RHICmdList, FeatureLevel, TextureRenderTargetResource);
+				UseGlobalShader_RenderThread(RHICmdList, FeatureLevel, TextureRenderTargetResource, TextureResource);
 			}
 		);
 }
