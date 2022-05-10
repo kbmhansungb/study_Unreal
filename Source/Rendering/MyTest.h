@@ -4,10 +4,11 @@
 
 #include "GlobalShader.h"
 #include "ScreenRendering.h"
+#include "Runtime/RenderCore/Public/ShaderParameterStruct.h"
 
 class FMyTestVS : public FGlobalShader
 {
-    DECLARE_EXPORTED_SHADER_TYPE(FMyTestVS, Global, RENDERING_API);
+	DECLARE_GLOBAL_SHADER(FMyTestVS);
 
 protected:
 	FMyTestVS() {}
@@ -24,15 +25,14 @@ protected:
 
 class FMyTestPS : public FGlobalShader
 {
-	DECLARE_EXPORTED_SHADER_TYPE(FMyTestPS, Global, RENDERING_API);
+	DECLARE_GLOBAL_SHADER(FMyTestPS);
+
+	SHADER_USE_PARAMETER_STRUCT(FMyTestPS, FGlobalShader)
+	BEGIN_SHADER_PARAMETER_STRUCT(FParameters, )
+		SHADER_PARAMETER_TEXTURE(Texture2D, SrcTexture)
+	END_SHADER_PARAMETER_STRUCT()
 
 protected:
-	FMyTestPS() {}
-	FMyTestPS(const ShaderMetaType::CompiledShaderInitializerType& Initializer)
-		: FGlobalShader(Initializer)
-	{
-	}
-
 	static bool ShouldCache(EShaderPlatform Platform)
 	{
 		return true;
