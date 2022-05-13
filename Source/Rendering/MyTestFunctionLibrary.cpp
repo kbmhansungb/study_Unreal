@@ -203,11 +203,8 @@ static void UseComputeShader_RenderThread(
 		);
 	FUnorderedAccessViewRHIRef TextureUAV = RHICreateUnorderedAccessView(Texture);
 	
-	RHICmdList.SetUAVParameter(ComputeShader.GetComputeShader(), 0, TextureUAV);
-
-	////이 방식은 쉐이더의 파라메터가 설정되지 않음.
-	//FMyTestCS::FParameters Parameter;
-	//Parameter.OutputTexture = TextureUAV;
+	FMyTestCS::FParameters Parameter;
+	Parameter.OutputTexture = TextureUAV;
 	SetShaderParameters(RHICmdList, ComputeShader, ComputeShader.GetComputeShader(), Parameter);
 
 	RHICmdList.DispatchComputeShader(SizeX, SizeY, 1);

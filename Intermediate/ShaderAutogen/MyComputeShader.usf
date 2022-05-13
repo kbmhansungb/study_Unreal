@@ -1,9 +1,8 @@
-#pragma once
-
 #include "/Engine/Public/Platform.ush"
 //#include "D:/Program Files/Epic Games/UE_5.0/Engine/Shaders/Public/Platform.ush"
+#include "/Engine/Private/Common.ush" 
 
-RWTexture2D<float4> OutputTexture : register(u0);
+RWTexture2D<float4> OutputTexture;
 
 [numthreads(32, 32, 1)]
 void MainCS(uint3 Gid : SV_GroupID,             //ATM: -, 0...256, - IN ROWS (Y)        --> CURRENT GROUP INDEX (DISPATCHED BY C++)
@@ -11,5 +10,5 @@ void MainCS(uint3 Gid : SV_GroupID,             //ATM: -, 0...256, - IN ROWS (Y)
             uint3 GTid : SV_GroupThreadID,      //ATM: 0...256, -,- IN COLUMNS (X)      --> CURRENT THREADID IN GROUP / "LOCAL" THREADID
             uint GI : SV_GroupIndex)            //ATM: 0...256 IN COLUMNS (X) 
 {
-    OutputTexture[DTid.xy] = 1.0f;
+    OutputTexture[DTid.xy] = float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
